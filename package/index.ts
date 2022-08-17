@@ -251,4 +251,73 @@ export class WatermelonRouter {
     }
 }
 
+/**
+ * @class melonInclude
+ * @description Custom element for including HTML elements in other pages
+ *
+ * @example
+ * Import basic paragraph element from another file.
+ * ```html
+ * <!-- include.html -->
+ * <p>Sandboxed include element!</p>
+ * ```
+ *
+ * ```html
+ * <!-- index.html -->
+ * <melon-include src="include.html"></melon-include>
+ * ```
+ *
+ * Import a basic component from another file.
+ * ```html
+ * <!-- include.html -->
+ * <p>Sandboxed include element!</p>
+ * <script>
+ *     document.querySelector("p").innerText = "This was changed from within the include!"
+ * </script>
+ * ```
+ *
+ * ```html
+ * <!-- index.html -->
+ * <melon-include src="include.html"></melon-include>
+ * ```
+ */
+export class melonInclude extends HTMLElement {
+    constructor() {
+        super();
+
+        // create sandbox (shadowroot)
+        this.attachShadow({ mode: "open" });
+
+        // fetch include
+        if (!this.getAttribute("src")) return;
+        (async () => {
+            const res = await fetch(this.getAttribute("src") as string);
+
+            // make sure it's ok
+            if (
+                !res.ok ||
+                !res.headers
+                    .get("Content-Type")!
+                    .includes(
+                        "text/html" /* we can only import html for this */
+                    )
+            ) {
+                console.log(
+                    `\u{1F6DF} %c| FAIL! We couldn't fetch the include for this element! (src="${this.getAttribute(
+                        "src"
+                    )}")`,
+                    "color: rgb(255, 87, 87);"
+                );
+            }
+
+            // get text and add to shadow
+            const text = await res.text();
+            this.shadowRoot!.innerHTML = text;
+        })();
+    }
+}
+
+customElements.define("melon-include", melonInclude);
+
+// default export
 export default WatermelonRouter;
