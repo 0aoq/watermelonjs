@@ -282,6 +282,18 @@ let includeCache = {}; // will hold all fetched includes so they can be easily r
  * <!-- index.html -->
  * <melon-include src="include.html"></melon-include>
  * ```
+ * 
+ * Import with given attributes.
+ * ```html
+ * <!-- include.html -->
+ * <melon-collector></melon-collector> <!-- in this example this will have an attribute name "hello" with the value of "world" -->
+ * <p>The <code>melon-collector</code> element will have all the given attributes!</p>
+ * ```
+ * 
+ * ```html
+ * <!-- index.html -->
+ * <melon-include src="include.html" hello="world"></melon-include>
+ * ```
  */
 export class melonInclude extends HTMLElement {
     constructor() {
@@ -317,11 +329,32 @@ export class melonInclude extends HTMLElement {
                 const text = await res.text();
                 this.shadowRoot!.innerHTML = text;
 
+                // load attributes
+                for (let attribute of Array.from(this.attributes)) {
+                    if (!this.shadowRoot!.querySelector("melon-collector")) break
+                    if (attribute.name === "src") continue;
+                    this.shadowRoot!.querySelector("melon-collector")?.setAttribute(
+                        attribute.name,
+                        attribute.value
+                    );
+                }
+
                 // add to includeCache, if we're here then we already know it doesn't exist yet
                 includeCache[this.getAttribute("src") as string] = text;
             } else {
                 // it's already in the cache, just add the include
-                this.shadowRoot!.innerHTML = includeCache[this.getAttribute("src") as string]
+                this.shadowRoot!.innerHTML =
+                    includeCache[this.getAttribute("src") as string];
+
+                // load attributes
+                for (let attribute of Array.from(this.attributes)) {
+                    if (!this.shadowRoot!.querySelector("melon-collector")) break
+                    if (attribute.name === "src") continue;
+                    this.shadowRoot!.querySelector("melon-collector")?.setAttribute(
+                        attribute.name,
+                        attribute.value
+                    );
+                }
             }
         })();
     }

@@ -7,7 +7,7 @@
   "scripts": {
     "watch": "tsc -w",
     "build:docs": "npx typedoc",
-    "deploy:docs": "npx typedoc && mkdir docs/dist && npx tsc && mv package/index.js docs/dist/watermelon.js && mv package/index.js.map docs/dist/index.js.map && mv test docs/test"
+    "deploy:docs": "npx typedoc && mkdir docs/dist && npx tsc && mv package/index.js docs/dist/watermelon.js && mv package/index.js.map docs/dist/index.js.map && mv package/index.ts docs/dist/index.ts && mv test docs/test"
   },
   "author": {
     "name": "0aoq",
