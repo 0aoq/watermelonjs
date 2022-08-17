@@ -2,7 +2,7 @@
  * @file Handle the base of the WatermelonRouter
  * @name index.ts
  * @license MIT
- * 
+ *
  * Source code available at: https://github.com/0aoq/watermelonjs.git
  */
 
@@ -32,9 +32,9 @@ export class WatermelonRouter {
         preload: boolean;
         hoverOnly: boolean;
     }) {
-        this.log = options.log || false; // define if debug logs should be shown
-        this.preload = options.preload || true; // should links be preloaded?
-        this.hoverOnly = options.hoverOnly || true; // should links only be preloaded on hover?
+        this.log = options.log; // define if debug logs should be shown
+        this.preload = options.preload; // should links be preloaded?
+        this.hoverOnly = options.hoverOnly; // should links only be preloaded on hover?
 
         this.fetched = [] as any; // will contain all anchor elements that we have already fetched/plan to fetch
         this.hasListener = [] as any; // each element under this.fetched will also exist here if it already has a listener
@@ -92,7 +92,7 @@ export class WatermelonRouter {
                 this.pages[url] = await res.text();
 
                 window.dispatchEvent(
-                    new CustomEvent("state.router:initialLoad")
+                    new CustomEvent("watermelon.router:initialLoad")
                 );
 
                 // handle click function
@@ -110,10 +110,6 @@ export class WatermelonRouter {
                     }
 
                     // dispatch event and change innerHTML
-                    window.dispatchEvent(
-                        new CustomEvent("state.router:linkLoad")
-                    );
-
                     (async () => {
                         // load page
                         document.documentElement.innerHTML = this.pages[url];
@@ -127,6 +123,13 @@ export class WatermelonRouter {
                         )) {
                             WatermelonRouter.cloneScript(script);
                         }
+
+                        // dispatch
+                        window.dispatchEvent(
+                            new CustomEvent("watermelon.router:change", {
+                                detail: { url: new URL(url) },
+                            })
+                        );
                     })();
 
                     // change the page state
@@ -164,7 +167,7 @@ export class WatermelonRouter {
                             );
 
                         window.dispatchEvent(
-                            new CustomEvent("state.router:failLoad")
+                            new CustomEvent("watermelon.router:failLoad")
                         );
 
                         resolve((e) => {
@@ -222,12 +225,12 @@ export class WatermelonRouter {
         };
 
         // get all anchor elements
-        window.dispatchEvent(new CustomEvent("state.router:build"));
+        window.dispatchEvent(new CustomEvent("watermelon.router:build"));
 
         // @ts-ignore
         for (let anchor of document.querySelectorAll("a")) {
-            if (this.hoverOnly) {
-                // add hover event listener, only add to list and do action when hovered
+            if (this.hoverOnly === true) {
+                // add hover event listener, only add to fetched and do action when hovered
                 (anchor as HTMLAnchorElement).addEventListener(
                     "mouseenter",
                     () => {
@@ -239,13 +242,11 @@ export class WatermelonRouter {
                 );
             } else {
                 if (!this.preload) return; // preload needs to be enabled to do this!
-                if (!this.fetched.includes(anchor)) this.fetched.push(anchor);
+                if (!this.fetched.includes(anchor)) {
+                    this.fetched.push(anchor);
+                    handleAnchor(anchor);
+                }
             }
-        }
-
-        // handle anchor elements
-        for (let anchor of this.fetched) {
-            handleAnchor(anchor);
         }
     }
 }

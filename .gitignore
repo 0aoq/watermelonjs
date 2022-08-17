@@ -170,8 +170,8 @@ dist
 
 # compiled typescript
 
-*.js
-*.js.map
+package/*.js
+package/*.js.map
 *.d.ts
 
 # typedoc
