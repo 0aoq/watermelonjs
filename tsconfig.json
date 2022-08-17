@@ -7,7 +7,7 @@
         "noImplicitAny": false,
         "inlineSources": false,
         "removeComments": true,
-        "sourceMap": true,
+        "sourceMap": false,
         "types": [],
         "lib": [
             "ESNext",

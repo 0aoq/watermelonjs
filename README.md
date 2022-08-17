@@ -9,7 +9,7 @@ _- Somebody Influential, 2022_
 ## About
 
 -   WatermelonJS might only a simple client side router at the moment, but it is still very powerful! WatermelonJS should work in every browser. If not, feel free to help contribute!
--   Watermelon is tiny! ~5KB after TypeScript compile!
+-   Watermelon is tiny! ~5KB after compiled!
 
 ## Usage
 
