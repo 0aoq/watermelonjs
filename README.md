@@ -4,6 +4,8 @@
 
 _- Somebody Influential, 2022_
 
+**Hey!** Documentation can be found at -> [https://🍉.docs.oxvs.net/](https://🍉.docs.oxvs.net/)
+
 ## About
 
 - WatermelonJS might only a simple client side router at the moment, but it is still very powerful! WatermelonJS should work in every browser. If not, feel free to help contribute!
@@ -37,4 +39,5 @@ Watermelon can be quickly created by importing it as a module in the head of the
 
 Watermelon is very unstable! I don't recommend you use it in a production app until I decide what I want to do with this.
 
-Watermelon is licensed under the MIT license. Please contribute!
+Watermelon is licensed under the MIT license. Please contribute! <br>
+Documentation available at [https://🍉.docs.oxvs.net/](https://🍉.docs.oxvs.net/)

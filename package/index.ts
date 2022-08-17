@@ -3,7 +3,7 @@
  * @name index.ts
  * @license MIT
  * 
- * Source code avaliable at: https://github.com/0aoq/watermelonjs.git
+ * Source code available at: https://github.com/0aoq/watermelonjs.git
  */
 
 /**
