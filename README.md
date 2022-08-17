@@ -51,7 +51,7 @@ Watermelon can be quickly created by importing it as a module in the head of the
 
 WatermelonJS contains some basic custom elements to help make better pages!
 
--   `melon-include` [Documentation](https://melon.docs.oxvs.net/classes/melonInclude.html)
+-   `melon-include`: [Documentation](https://melon.docs.oxvs.net/classes/melonInclude.html)
 
 ## Notes
 
