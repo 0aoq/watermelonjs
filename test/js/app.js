@@ -1,4 +1,4 @@
-// import watermelon.js a start the router
+// import watermelon.js and start the router
 
 if (
     window.location.hostname === "localhost" ||

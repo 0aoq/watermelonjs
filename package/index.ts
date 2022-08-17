@@ -251,6 +251,8 @@ export class WatermelonRouter {
     }
 }
 
+let includeCache = {}; // will hold all fetched includes so they can be easily reloaded later
+
 /**
  * @class melonInclude
  * @description Custom element for including HTML elements in other pages
@@ -291,28 +293,36 @@ export class melonInclude extends HTMLElement {
         // fetch include
         if (!this.getAttribute("src")) return;
         (async () => {
-            const res = await fetch(this.getAttribute("src") as string);
+            if (!includeCache[this.getAttribute("src") as string]) {
+                const res = await fetch(this.getAttribute("src") as string);
 
-            // make sure it's ok
-            if (
-                !res.ok ||
-                !res.headers
-                    .get("Content-Type")!
-                    .includes(
-                        "text/html" /* we can only import html for this */
-                    )
-            ) {
-                console.log(
-                    `\u{1F6DF} %c| FAIL! We couldn't fetch the include for this element! (src="${this.getAttribute(
-                        "src"
-                    )}")`,
-                    "color: rgb(255, 87, 87);"
-                );
+                // make sure it's ok
+                if (
+                    !res.ok ||
+                    !res.headers
+                        .get("Content-Type")!
+                        .includes(
+                            "text/html" /* we can only import html for this */
+                        )
+                ) {
+                    console.log(
+                        `\u{1F6DF} %c| FAIL! We couldn't fetch the include for this element! (src="${this.getAttribute(
+                            "src"
+                        )}")`,
+                        "color: rgb(255, 87, 87);"
+                    );
+                }
+
+                // get text and add to shadow
+                const text = await res.text();
+                this.shadowRoot!.innerHTML = text;
+
+                // add to includeCache, if we're here then we already know it doesn't exist yet
+                includeCache[this.getAttribute("src") as string] = text;
+            } else {
+                // it's already in the cache, just add the include
+                this.shadowRoot!.innerHTML = includeCache[this.getAttribute("src") as string]
             }
-
-            // get text and add to shadow
-            const text = await res.text();
-            this.shadowRoot!.innerHTML = text;
         })();
     }
 }
