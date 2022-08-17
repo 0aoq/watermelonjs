@@ -5,7 +5,9 @@
   "main": "package/index.js",
   "type": "module",
   "scripts": {
-    "watch": "tsc -w"
+    "watch": "tsc -w",
+    "build:docs": "npx typedoc",
+    "deploy:docs": "npx typedoc && mkdir docs/dist && npx tsc && mv package/index.js docs/dist/watermelon.js && mv package/index.js.map docs/dist/index.js.map"
   },
   "author": {
     "name": "0aoq",
