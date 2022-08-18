@@ -148,7 +148,7 @@ export class WatermelonRouter {
                         for (let element of document.head.querySelectorAll(
                             "*"
                         )) {
-                            if (!doRemoveElement(newNodes, element)) continue; // don't remove this because it exists in the
+                            if (!doRemoveElement(newNodes, element)) continue; // don't remove this element because it needs to still be present after merge
                             element.remove();
                         }
 
@@ -163,7 +163,7 @@ export class WatermelonRouter {
                                     element
                                 )
                             )
-                                continue; // don't add this because it already exists
+                                continue; // don't add this element because it already exists
 
                             document.head.appendChild(element);
                         }
