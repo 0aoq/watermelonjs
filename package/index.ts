@@ -14,6 +14,7 @@ export class WatermelonRouter {
     log: boolean;
     preload: boolean;
     hoverOnly: boolean;
+    search: HTMLElement | Document;
 
     fetched: Array<HTMLAnchorElement>;
     hasListener: Array<HTMLAnchorElement>;
@@ -26,15 +27,19 @@ export class WatermelonRouter {
      * @param {boolean} options.log Define if debug logs should be shown
      * @param {boolean} options.preload Should links be preloaded?
      * @param {boolean} options.hoverOnly Should links only be preloaded on hover?
+     * @param {HTMLElement | Document} options.search Where should we look for links?
      */
     constructor(options: {
         log: boolean;
         preload: boolean;
         hoverOnly: boolean;
+        search: HTMLElement | Document
     }) {
         this.log = options.log; // define if debug logs should be shown
         this.preload = options.preload; // should links be preloaded?
         this.hoverOnly = options.hoverOnly; // should links only be preloaded on hover?
+        this.search = options.search; // where should we look for links?
+        if (this.search === undefined) this.search = document
 
         this.fetched = [] as any; // will contain all anchor elements that we have already fetched/plan to fetch
         this.hasListener = [] as any; // each element under this.fetched will also exist here if it already has a listener
@@ -43,7 +48,7 @@ export class WatermelonRouter {
         ////////////////////////////////////////////////////////////
 
         // event listener to preload links
-        document.addEventListener("scroll", this.start);
+        this.search.addEventListener("scroll", this.start);
         this.start(); // run on first load
     }
 
@@ -117,7 +122,7 @@ export class WatermelonRouter {
                         // run scripts
 
                         // @ts-ignore
-                        for (let script of document.querySelectorAll(
+                        for (let script of this.search.querySelectorAll(
                             // don't rerun scripts that want their state to save
                             'script:not([state="save"])'
                         )) {
@@ -228,7 +233,7 @@ export class WatermelonRouter {
         window.dispatchEvent(new CustomEvent("watermelon.router:build"));
 
         // @ts-ignore
-        for (let anchor of document.querySelectorAll("a")) {
+        for (let anchor of this.search.querySelectorAll("a")) {
             if (this.hoverOnly === true) {
                 // add hover event listener, only add to fetched and do action when hovered
                 (anchor as HTMLAnchorElement).addEventListener(
