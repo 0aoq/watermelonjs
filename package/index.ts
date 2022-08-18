@@ -33,13 +33,13 @@ export class WatermelonRouter {
         log: boolean;
         preload: boolean;
         hoverOnly: boolean;
-        search: HTMLElement | Document
+        search: HTMLElement | Document;
     }) {
         this.log = options.log; // define if debug logs should be shown
         this.preload = options.preload; // should links be preloaded?
         this.hoverOnly = options.hoverOnly; // should links only be preloaded on hover?
         this.search = options.search; // where should we look for links?
-        if (this.search === undefined) this.search = document
+        if (this.search === undefined) this.search = document;
 
         this.fetched = [] as any; // will contain all anchor elements that we have already fetched/plan to fetch
         this.hasListener = [] as any; // each element under this.fetched will also exist here if it already has a listener
@@ -363,15 +363,13 @@ export class melonInclude extends HTMLElement {
             }
 
             // run scripts
-            setTimeout(() => {
-                // @ts-ignore
-                for (let script of this.shadowRoot.querySelectorAll(
-                    // don't rerun scripts that want their state to save
-                    'script:not([state="save"])'
-                )) {
-                    new Function(script.innerHTML).call(this.shadowRoot)
-                }
-            }, 500);
+            // @ts-ignore
+            for (let script of this.shadowRoot.querySelectorAll(
+                // don't rerun scripts that want their state to save
+                'script:not([state="save"])'
+            )) {
+                new Function(script.innerHTML).call(this.shadowRoot);
+            }
         })();
     }
 }
