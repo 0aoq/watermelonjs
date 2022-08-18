@@ -8,7 +8,7 @@
     "watch": "npx tsc -w",
     "build:docs": "npx typedoc",
     "build": "npx tsc && npx vite build",
-    "deploy:docs": "npx typedoc && mkdir docs/dist && npm run build && mv dist docs/dist && mv test docs/test"
+    "deploy:docs": "npx typedoc && npm run build && mv dist docs/dist && mv test docs/test"
   },
   "author": {
     "name": "0aoq",
