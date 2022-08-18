@@ -129,29 +129,42 @@ export class WatermelonRouter {
                         const newNodes = Array.from(parsed.head.children);
 
                         // quick function to test if an element needs to be removed or not
-                        const doRemoveElement = (element: HTMLElement) => {
+                        const doRemoveElement = (
+                            nodeList: Array<Node>,
+                            element: HTMLElement
+                        ) => {
                             if (
-                                newNodes.find((node: any) =>
+                                nodeList.find((node: any) =>
                                     node.isEqualNode(element as HTMLElement)
                                 )
                             ) {
-                                return true; // don't remove this because it already exists
+                                return false; // don't remove this because it already exists
                             }
 
-                            return false;
+                            return true;
                         };
 
                         // @ts-ignore
                         for (let element of document.head.querySelectorAll(
                             "*"
                         )) {
-                            if (doRemoveElement(element)) continue; // don't remove this because it already exists
+                            if (!doRemoveElement(newNodes, element)) continue; // don't remove this because it exists in the
                             element.remove();
                         }
 
                         // @ts-ignore
                         for (let element of parsed.head.querySelectorAll("*")) {
-                            if (doRemoveElement(element)) continue; // don't add this because it already exists
+                            // @ts-ignore
+                            if (
+                                !doRemoveElement(
+                                    Array.from(
+                                        document.head.querySelectorAll("*")
+                                    ),
+                                    element
+                                )
+                            )
+                                continue; // don't add this because it already exists
+
                             document.head.appendChild(element);
                         }
 
