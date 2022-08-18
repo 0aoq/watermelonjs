@@ -128,10 +128,9 @@ export class WatermelonRouter {
 
                         const newNodes = Array.from(parsed.head.children);
 
-                        // quick function to test if an element needs to be removed or nor
+                        // quick function to test if an element needs to be removed or not
                         const doRemoveElement = (element: HTMLElement) => {
                             if (
-                                element.nodeName === "LINK" &&
                                 newNodes.find((node: any) =>
                                     node.isEqualNode(element as HTMLElement)
                                 )
