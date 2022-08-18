@@ -94,7 +94,12 @@ export class WatermelonRouter {
         // attempt fetch
         return new Promise((resolve, reject) => {
             const linkMain = async (res) => {
+                // clean dom
                 this.pages[url] = await res.text();
+                const parsed = new DOMParser().parseFromString(
+                    this.pages[url],
+                    "text/html"
+                );
 
                 window.dispatchEvent(
                     new CustomEvent("watermelon.router:initialLoad")
@@ -116,8 +121,40 @@ export class WatermelonRouter {
 
                     // dispatch event and change innerHTML
                     (async () => {
-                        // load page
-                        document.documentElement.innerHTML = this.pages[url];
+                        // load page, we need to set the body and the head separately so chrome works better with it
+                        document.body.innerHTML = parsed.body.innerHTML;
+
+                        // remove each head element.. as long as it isn't a <link> (keep the css in place)
+
+                        const newNodes = Array.from(parsed.head.children);
+
+                        // quick function to test if an element needs to be removed or nor
+                        const doRemoveElement = (element: HTMLElement) => {
+                            if (
+                                element.nodeName === "LINK" &&
+                                newNodes.find((node: any) =>
+                                    node.isEqualNode(element as HTMLElement)
+                                )
+                            ) {
+                                return true; // don't remove this because it already exists
+                            }
+
+                            return false;
+                        };
+
+                        // @ts-ignore
+                        for (let element of document.head.querySelectorAll(
+                            "*"
+                        )) {
+                            if (doRemoveElement(element)) continue; // don't remove this because it already exists
+                            element.remove();
+                        }
+
+                        // @ts-ignore
+                        for (let element of parsed.head.querySelectorAll("*")) {
+                            if (doRemoveElement(element)) continue; // don't add this because it already exists
+                            document.head.appendChild(element);
+                        }
 
                         // run scripts
 
