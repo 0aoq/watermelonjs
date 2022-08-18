@@ -12,6 +12,11 @@
 <body>
     <melon-collector></melon-collector>
     <p>This was included!</p>
+
+    <script>
+        // use "this" instead of "document" in an include to use the current shadowRoot!
+        this.querySelector("p").innerHTML = "This was changed from an include!"
+    </script>
 </body>
 
 </html>

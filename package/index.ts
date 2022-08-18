@@ -269,12 +269,12 @@ let includeCache = {}; // will hold all fetched includes so they can be easily r
  * <melon-include src="include.html"></melon-include>
  * ```
  *
- * Import a basic component from another file.
+ * Import a basic component from another file. Scripts should always use "this" to interact with its component, not document.
  * ```html
  * <!-- include.html -->
  * <p>Sandboxed include element!</p>
  * <script>
- *     document.querySelector("p").innerText = "This was changed from within the include!"
+ *     this.querySelector("p").innerText = "This was changed from within the include!"
  * </script>
  * ```
  *
@@ -282,14 +282,14 @@ let includeCache = {}; // will hold all fetched includes so they can be easily r
  * <!-- index.html -->
  * <melon-include src="include.html"></melon-include>
  * ```
- * 
+ *
  * Import with given attributes.
  * ```html
  * <!-- include.html -->
  * <melon-collector></melon-collector> <!-- in this example this will have an attribute name "hello" with the value of "world" -->
  * <p>The <code>melon-collector</code> element will have all the given attributes!</p>
  * ```
- * 
+ *
  * ```html
  * <!-- index.html -->
  * <melon-include src="include.html" hello="world"></melon-include>
@@ -331,12 +331,12 @@ export class melonInclude extends HTMLElement {
 
                 // load attributes
                 for (let attribute of Array.from(this.attributes)) {
-                    if (!this.shadowRoot!.querySelector("melon-collector")) break
+                    if (!this.shadowRoot!.querySelector("melon-collector"))
+                        break;
                     if (attribute.name === "src") continue;
-                    this.shadowRoot!.querySelector("melon-collector")?.setAttribute(
-                        attribute.name,
-                        attribute.value
-                    );
+                    this.shadowRoot!.querySelector(
+                        "melon-collector"
+                    )?.setAttribute(attribute.name, attribute.value);
                 }
 
                 // add to includeCache, if we're here then we already know it doesn't exist yet
@@ -348,14 +348,25 @@ export class melonInclude extends HTMLElement {
 
                 // load attributes
                 for (let attribute of Array.from(this.attributes)) {
-                    if (!this.shadowRoot!.querySelector("melon-collector")) break
+                    if (!this.shadowRoot!.querySelector("melon-collector"))
+                        break;
                     if (attribute.name === "src") continue;
-                    this.shadowRoot!.querySelector("melon-collector")?.setAttribute(
-                        attribute.name,
-                        attribute.value
-                    );
+                    this.shadowRoot!.querySelector(
+                        "melon-collector"
+                    )?.setAttribute(attribute.name, attribute.value);
                 }
             }
+
+            // run scripts
+            setTimeout(() => {
+                // @ts-ignore
+                for (let script of this.shadowRoot.querySelectorAll(
+                    // don't rerun scripts that want their state to save
+                    'script:not([state="save"])'
+                )) {
+                    new Function(script.innerHTML).call(this.shadowRoot)
+                }
+            }, 500);
         })();
     }
 }
