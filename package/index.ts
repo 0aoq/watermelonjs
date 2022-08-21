@@ -48,7 +48,7 @@ export class WatermelonRouter {
         ////////////////////////////////////////////////////////////
 
         // event listener to preload links
-        this.search.addEventListener("scroll", this.start);
+        // this.search.addEventListener("scroll", this.start);
         this.start(); // run on first load
     }
 
